@@ -1,47 +1,22 @@
 "use strict";
 
-import { getTodos, postTodo } from "./api.js";
+import { getTodos, postTodo } from "./modules/api.js";
+import { renderText } from "./modules/render.js";
+import { emptyInput } from "./modules/emptyInput.js";
+import { sanitize } from "./modules/sanitize.js";
+import { pressingEnter } from "./modules/pressingEnter.js";
 
-    const writeButton = document.getElementById('writeButton');
-    // const deleteButton = document.getElementById('delete-button');
+    export const writeButton = document.getElementById('writeButton');
+    export const userName = document.getElementById('userName');
+    export const userComment = document.getElementById('userComment');
     const commentsList = document.getElementById('list');
-    const userName = document.getElementById('userName');
-    const userComment = document.getElementById('userComment');
-    // const form = document.getElementById('form');
 
     commentsList.innerHTML = `<li class="comment">Loading in progress. Plese wait...</li>`;
 
-    let listComments = [];
+    export let listComments = [];
 
     const renderComments = () => {
-
-      const commentsHTML = listComments.map((userComment, index) => {
-      let textHTML;
-        
-      textHTML = `<li class="comment">
-        <div class="comment-header">
-          <div>${userComment.author.name}</div>
-          <div>${new Date(userComment.date).toLocaleDateString() + " "
-            + new Date(userComment.date).getHours() + ":" + new Date(userComment.date).getMinutes()}</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            ${userComment.text}
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">${userComment.likes}</span>
-            <button class="like-button ${userComment.isLiked ? "-active-like" : ""}" data-index='${index}'></button>
-          </div>
-        </div>
-      </li>`
-
-      return textHTML;
-      }).join('');
-
-      commentsList.innerHTML = commentsHTML;
-
+      renderText(commentsList)
       likeEvent();
       answerComment();
     }
@@ -58,7 +33,7 @@ import { getTodos, postTodo } from "./api.js";
       })
     }
 
-    function likeEvent () {
+    export function likeEvent () {
       const likes = document.querySelectorAll('.like-button');
       
       for (const likeElement of likes) {
@@ -77,30 +52,7 @@ import { getTodos, postTodo } from "./api.js";
       } 
     }
 
-    writeButton.disabled = true;
-
-    userName.addEventListener('input', (e) => {  //added event for empty input.
-
-      if (userName.value.trim() === '' || e.target.value.trim() === '') {
-        writeButton.disabled = true;
-      } else {
-        writeButton.disabled = false;
-      }
-    })
-
-    userComment.addEventListener('input', (e) => {
-
-      if (userComment.value.trim() === '' || e.target.value.trim() === '') {
-        writeButton.disabled = true;
-      } else {
-        writeButton.disabled = false;
-      }
-    })
-
-    function sanitize(text) {
-      return text.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-      .replaceAll('QUOTE_BEGIN', '<div class="quote">').replaceAll('QUOTE_END', '</div>');
-    }
+    emptyInput()
 
     function afterClickWriteButton(e) {
       e.stopPropagation();
@@ -127,7 +79,7 @@ import { getTodos, postTodo } from "./api.js";
             name: sanitize(userComment.value),
             forceError: true,
             startTime,
-          }).then((jsonResponse) => {
+          }).then(() => {
             return get();
           })
           .then((response) => {
@@ -162,7 +114,7 @@ import { getTodos, postTodo } from "./api.js";
     // writeButton.addEventListener('click', afterClickWrightButton);
     writeButton.onclick = afterClickWriteButton;
 
-    function answerComment() {
+    export function answerComment() {
       const commentHTML = document.querySelectorAll('.comment');
       commentHTML.forEach((el, i) => {
         el.addEventListener('click', () => {
@@ -171,10 +123,6 @@ import { getTodos, postTodo } from "./api.js";
       })
     }
 
-    document.addEventListener('keyup', (el) => {      // added event for pressing Enter.
-      if (el.keyCode === 13) {
-        writeButton.click();
-      }
-    })
+    pressingEnter()
 
     console.log("It works!");
