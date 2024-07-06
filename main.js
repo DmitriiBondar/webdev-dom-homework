@@ -13,8 +13,8 @@ export let listComments = [];
 
 export const renderComments = () => {
   renderText(commentsList)
-  likeEvent(listComments);
-  answerComment(listComments);
+  likeEvent();
+  answerComment();
 }
 
 export const get = () => {
