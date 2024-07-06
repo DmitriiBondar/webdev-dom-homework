@@ -160,6 +160,10 @@ body {
     background: #698d96;
   }
 
-  .hidden {
+  .hidden,
+  .hiddenReg,
+  .hiddenLog,
+  .comHidden,
+  .hiddenError {
     display: none;
   }

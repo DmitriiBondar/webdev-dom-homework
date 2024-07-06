@@ -12,12 +12,48 @@
         <!-- Комментарии рендерятся из JS -->
       </ul>
       <div id="loading" class="add-form hidden">Loading</div>
-      <div id="form" class="add-form">
+      <div class="!hidden" id="authorization">
+        <p>Чтобы оставить комментарий, <a href="#">авторизуйтесь</a></p>
+      </div>
+      <!-- Авторизация -->
+      <div id="log" class="add-form hidden"></div>
+      <div class="hidden" id="logError">
+        <p style="color: brown;">Неверный логин или пароль</p>
+      </div>
+      <!-- Registration -->
+      <div id="reg" class="add-form hidden">
+        <input style="margin-bottom: 10px;"
+          type="text"
+          id="regName"
+          class="add-form-name"
+          placeholder="Введите имя"
+        />
+        <input style="margin-bottom: 10px;"
+          type="text"
+          id="regLogin"
+          class="add-form-name"
+          placeholder="Придумайте логин"
+        />
+        <input style="margin-bottom: 25px;"
+          type="password"
+          id="regPassword"
+          class="add-form-name"
+          placeholder="Придумайте пароль"
+        />
+        <div class="add-form-row">
+          <button id="regBtn" class="add-form-button">Зарегистрироваться</button>
+        </div>
+      </div>
+      <!-- --- Add new comment --- -->
+       <div id="form" class="add-form hidden"></div>
+      <!-- <div id="form" class="add-form comHidden">
           <input
+          
           type="text"
           id="userName"
           class="add-form-name"
-          placeholder="Введите ваше имя"
+          placeholder=""
+          value=""
         />
         <textarea
           type="textarea"
@@ -29,10 +65,11 @@
         <div class="add-form-row">
           <button id="writeButton" class="add-form-button">Написать</button>
         </div>
-        <div>
+        <div style="display: none;">
           <button id="delete-button" class="delete-form-button">Удалить последний комментарий</button>
         </div>
-      </div>
+      </div> -->
+
     </div>
   </body>
 
