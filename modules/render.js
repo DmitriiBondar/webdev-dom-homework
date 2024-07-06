@@ -1,7 +1,6 @@
 import { listComments, get } from "../main.js";
 import { userLogin, token, setToken, postTodo } from "./api.js";
 import { sanitize } from "./sanitize.js";
-// import { emptyInput } from "./emptyInput.js";
 
 const commentsList = document.getElementById("list")
 
@@ -101,8 +100,6 @@ export const renderLogin = (signIn) => {
   })
 }
 
-
-
 const wright = document.getElementById("form")
 
 export function renderWright(wright) {
@@ -129,7 +126,6 @@ export function renderWright(wright) {
   const userComment = document.getElementById('userComment');
   const writeBtn = document.getElementById('writeButton')
   const logLoginInput = document.getElementById('logLogin')
-  // const logPasswordInput = document.getElementById('logPassword')
 
     function emptyInput() {
       writeBtn.disabled = true;
@@ -156,8 +152,6 @@ export function renderWright(wright) {
 
   document.getElementById("form").classList.add("hidden")
   document.getElementById("logError").classList.add("hidden")
-
-  
   
   writeBtn.addEventListener("click", (e) => {
     e.stopPropagation();
