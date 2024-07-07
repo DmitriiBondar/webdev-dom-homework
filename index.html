@@ -12,242 +12,42 @@
         <!-- Комментарии рендерятся из JS -->
       </ul>
       <div id="loading" class="add-form hidden">Loading</div>
-      <div id="form" class="add-form">
-          <input
+      <div class="!hidden" id="authorization">
+        <p>Чтобы оставить комментарий, <a href="#">авторизуйтесь</a></p>
+      </div>
+      <!-- Авторизация -->
+      <div id="log" class="add-form hidden"></div>
+      <div class="hidden" id="logError">
+        <p style="color: brown;">Неверный логин или пароль</p>
+      </div>
+      <!-- Registration -->
+      <div id="reg" class="add-form hidden">
+        <input style="margin-bottom: 10px;"
           type="text"
-          id="userName"
+          id="regName"
           class="add-form-name"
-          placeholder="Введите ваше имя"
+          placeholder="Введите имя"
         />
-        <textarea
-          type="textarea"
-          id="userComment"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
+        <input style="margin-bottom: 10px;"
+          type="text"
+          id="regLogin"
+          class="add-form-name"
+          placeholder="Придумайте логин"
+        />
+        <input style="margin-bottom: 25px;"
+          type="password"
+          id="regPassword"
+          class="add-form-name"
+          placeholder="Придумайте пароль"
+        />
         <div class="add-form-row">
-          <button id="writeButton" class="add-form-button">Написать</button>
-        </div>
-        <div>
-          <button id="delete-button" class="delete-form-button">Удалить последний комментарий</button>
+          <button id="regBtn" class="add-form-button">Зарегистрироваться</button>
         </div>
       </div>
+      <!-- --- Add new comment --- -->
+      <div id="form" class="add-form hidden"></div>
     </div>
   </body>
 
-  <script>
-    "use strict";
-
-    const writeButton = document.getElementById('writeButton');
-    const deleteButton = document.getElementById('delete-button');
-    const commentsList = document.getElementById('list');
-    const userName = document.getElementById('userName');
-    const userComment = document.getElementById('userComment');
-    const form = document.getElementById('form');
-
-    commentsList.innerHTML = `<li class="comment">Loading in progress. Plese wait...</li>`;
-
-    let listComments = [];
-
-    const renderComments = () => {
-
-      const commentsHTML = listComments.map((userComment, index) => {
-      let textHTML;
-        
-      textHTML = `<li class="comment">
-        <div class="comment-header">
-          <div>${userComment.author.name}</div>
-          <div>${new Date(userComment.date).toLocaleDateString() + " "
-            + new Date(userComment.date).getHours() + ":" + new Date(userComment.date).getMinutes()}</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            ${userComment.text}
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">${userComment.likes}</span>
-            <button class="like-button ${userComment.isLiked ? "-active-like" : ""}" data-index='${index}'></button>
-          </div>
-        </div>
-      </li>`
-
-      return textHTML;
-      }).join('');
-
-      commentsList.innerHTML = commentsHTML;
-
-      likeEvent();
-      answerComment();
-    }
-
-    get();
-
-    function get() {
-      return fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bondar/comments", {
-        method: "GET",
-      })
-      .then((promis) => {
-        if (promis.status === 200) {
-          return promis.json();
-        } else {
-          throw new Error("Сервер упал");
-        }
-      })
-      .then((resultDATA) => {
-        listComments = resultDATA.comments;
-        renderComments();
-      })
-      .catch(() => {
-        alert('Что-то пошло не так с get()...')
-      })
-    }
-
-    function likeEvent () {
-      const likes = document.querySelectorAll('.like-button');
-      
-      for (const likeElement of likes) {
-        likeElement.addEventListener('click', (e) => {
-          e.stopPropagation();
-
-          const index = likeElement.dataset.index;
-
-          const direction = listComments[index].isLiked ? -1 : +1;
-
-          listComments[index].likes += direction;
-          listComments[index].isLiked = !listComments[index].isLiked;
-
-          renderComments();
-        })
-      } 
-    }
-
-    writeButton.disabled = true;
-
-    userName.addEventListener('input', (e) => {  //added event for empty input.
-
-      if (userName.value.trim() === '' || e.target.value.trim() === '') {
-        writeButton.disabled = true;
-      } else {
-        writeButton.disabled = false;
-      }
-    })
-
-    userComment.addEventListener('input', (e) => {
-
-      if (userComment.value.trim() === '' || e.target.value.trim() === '') {
-        writeButton.disabled = true;
-      } else {
-        writeButton.disabled = false;
-      }
-    })
-
-    function sanitize(text) {
-      return text.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-      .replaceAll('QUOTE_BEGIN', '<div class="quote">').replaceAll('QUOTE_END', '</div>');
-    }
-
-    function afterClickWriteButton(e) {
-      e.stopPropagation();
-
-      userName.classList.remove('error');
-      userComment.classList.remove('error');
-
-      if (userName.value === '') {
-        userName.classList.add('error');
-
-      } else if (userComment.value === '') {
-        userComment.classList.add('error');
-
-      } else {
-
-        const startTime = Date.now();
-
-        document.getElementById('loading').classList.remove('hidden');
-        document.getElementById('form').classList.add('hidden');
-
-        function post() {
-          const result = fetch("https://wedev-api.sky.pro/api/v1/dmitrii-bondar/comments", {
-            method: "POST",
-            body: JSON.stringify({
-              name: sanitize(userName.value),
-              text: sanitize(userComment.value),
-              forceError: true,
-            }),
-          })
-          .then((response) => {
-            console.log('Прошло времени: ' + (Date.now() - startTime));
-            return response
-          })
-          .then((response) => {
-            console.log(response);
-            if (response.status === 201) {
-              return response.json();
-            } else if (response.status === 400) {
-              alert(`Server error ${response.status}\n\nВведите не менее 3-х символов.`);
-              throw new Error("Сервер упал 400");
-            } else if (response.status === 500) {
-              alert(`Server error ${response.status}`);
-              post();
-              throw new Error("Сервер упал 500");
-            }
-          })
-          .then((response) => {
-            console.log('Прошло времени: ' + (Date.now() - startTime));
-            return response
-          })
-          .then((jsonResponse) => {
-            return get();
-          })
-          .then((response) => {
-            console.log('Прошло времени: ' + (Date.now() - startTime));
-            userName.value = '';
-            userComment.value = '';
-            
-            document.getElementById('writeButton').disabled = true;
-            return response
-          })
-          .catch((error) => {
-            document.getElementById('writeButton').disabled = false;
-            console.warn(error);
-            return error
-          })
-          .finally(() => {
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('form').classList.remove('hidden');
-          });
-        }
-        post();
-        let isConnected = window.navigator.onLine;
-        console.log('isConnected' + ' ' + isConnected);
-        if (!isConnected) {
-          alert('Проверьте интернет');
-        }
-      }
-    }
-
-    document.getElementById('writeButton').disabled = true;
-
-    // writeButton.addEventListener('click', afterClickWrightButton);
-    writeButton.onclick = afterClickWriteButton;
-
-    function answerComment() {
-      const commentHTML = document.querySelectorAll('.comment');
-      commentHTML.forEach((el, i) => {
-        el.addEventListener('click', () => {
-          userComment.value = `QUOTE_BEGIN>${listComments[i].author.name}\n ${listComments[i].text}QUOTE_END`;
-        })
-      })
-    }
-
-    document.addEventListener('keyup', (el) => {      // added event for pressing Enter.
-      if (el.keyCode === 13) {
-        writeButton.click();
-      }
-    })
-
-    console.log("It works!");
-  </script>
+  <script type="module" src="./main.js"></script>
 </html>
