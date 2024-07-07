@@ -1,5 +1,5 @@
 import { listComments, get } from "../main.js";
-import { userLogin, token, setToken, postTodo } from "./api.js";
+import { userLogin, setToken, postTodo } from "./api.js";
 import { sanitize } from "./sanitize.js";
 
 const commentsList = document.getElementById("list")
@@ -78,9 +78,7 @@ export const renderLogin = (signIn) => {
       password: logPasswordInput.value,
     })
     .then((response) => {
-      console.log(token);
       setToken(response.user.token)
-      console.log(token);
     })
     .then((response) => {
       if (response !== 400) {
@@ -105,19 +103,17 @@ const wright = document.getElementById("form")
 export function renderWright(wright) {
   const wrightHTML = 
   `
-    
-      <div id="userName"></div>
-      <textarea
-        type="textarea"
-        id="userComment"
-        class="add-form-text"
-        placeholder="Введите ваш коментарий"
-        rows="4"
-      ></textarea>
-      <div class="add-form-row">
-        <button id="writeButton" class="add-form-button">Написать</button>
-      </div>
-    
+    <div id="userName"></div>
+    <textarea
+      type="textarea"
+      id="userComment"
+      class="add-form-text"
+      placeholder="Введите ваш коментарий"
+      rows="4"
+    ></textarea>
+    <div class="add-form-row">
+      <button id="writeButton" class="add-form-button">Написать</button>
+    </div>
   `
 
   wright.innerHTML = wrightHTML

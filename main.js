@@ -35,5 +35,3 @@ export const get = () => {
 }
 
 get();
-
-answerComment(listComments)
