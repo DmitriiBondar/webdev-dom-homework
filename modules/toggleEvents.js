@@ -6,9 +6,10 @@ export function likeEvent (listComments) {
 
     for (const likeElement of likes) {
         likeElement.addEventListener('click', (e) => {
-            console.log(token);
+
+            e.stopPropagation();
+
             if (token !== undefined) {
-                e.stopPropagation();
 
                 const index = likeElement.dataset.index;
                 
